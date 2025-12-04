@@ -819,11 +819,11 @@
             </div>
                     <div class="info-text">※メニューを選択すると<br>空き状況のカレンダーが表示されます</div>
             <div class="symptoms">
-                <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="15000">リンパドレナージュ(60分)【初回限定】</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="15000">リンパドレナージュ(90分)【初回限定】</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment3')" data-price="15000">リンパドレナージュ(120分)【初回限定】</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="15000">リンパクリア(60分)【初回限定】</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="15000">ヘッディマルマ(45分)【初回限定】</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment1')" data-price="4800">リンパドレナージュ(60分)【初回限定】</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment2')" data-price="6400">リンパドレナージュ(90分)【初回限定】</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment3')" data-price="8000">リンパドレナージュ(120分)【初回限定】</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment4')" data-price="4000">リンパクリア(60分)【初回限定】</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment5')" data-price="4000">ヘッディマルマ(45分)【初回限定】</button>
             </div>
         </div>
 
@@ -833,11 +833,11 @@
             </div>
                     <div class="info-text">※メニューを選択すると<br>空き状況のカレンダーが表示されます</div>
             <div class="symptoms">
-                <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="15000">リンパドレナージュ(60分)</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="15000">リンパドレナージュ(90分)</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="15000">リンパドレナージュ(120分)</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment9')" data-price="15000">リンパクリア(60分)</button>
-                <button type="button" onclick="selectSymptom(this, 'treatment10')" data-price="15000">ヘッディマルマ(45分)</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment6')" data-price="6000">リンパドレナージュ(60分)</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment7')" data-price="8000">リンパドレナージュ(90分)</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment8')" data-price="10000">リンパドレナージュ(120分)</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment9')" data-price="5000">リンパクリア(60分)</button>
+                <button type="button" onclick="selectSymptom(this, 'treatment10')" data-price="5000">ヘッディマルマ(45分)</button>
             </div>
         </div>
 
@@ -1421,10 +1421,13 @@
                 return;
             }
 
+    // ★ ここで合計料金を計算（メニュー料金＋オプション料金）
+    const totalPrice = menuPrice + optionsPrice;  // menuPrice / optionsPrice は既に上で管理されている変数
+
             // LINEトークにメッセージを送信
             liff.sendMessages([{
                 type: 'text',
-                text: `【予約フォーム】\n【店舗】：lasante\nお名前：${formData.name}\n電話番号：${formData.phone}\nご来店回数：${formData.selectedMenu}\nメニュー：${formData.selectedSymptom}\n希望日時：\n ${formData.dates[0]}\nメッセージ：${formData.message}`
+                text: `【予約フォーム】\n【店舗】：lasante\nお名前：${formData.name}\n電話番号：${formData.phone}\nご来店回数：${formData.selectedMenu}\nメニュー：${formData.selectedSymptom}\n料金：¥${totalPrice.toLocaleString('ja-JP')}\n希望日時：\n ${formData.dates[0]}\nメッセージ：${formData.message}`
             }]).then(() => {
                 /* メッセージ送信成功時の処理 */
                 alert('当日キャンセルは無いようにお願いいたします。');
