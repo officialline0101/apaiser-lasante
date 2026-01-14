@@ -15,7 +15,7 @@
             /* さらに右へ */
             top: 80%;
             /* 画面中央に固定 */
-            transform: translateY(-50%) translateX(10px);
+            transform: translateY(-50%) translateX(16px);
             /* 中央配置と右ずらし */
             background: #FF8C00;
             display: flex;
@@ -96,7 +96,7 @@
             background-color: #fdfdfd;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 90%;
+            width: 96%;
             max-width: 500px;
             padding: 25px;
             box-sizing: border-box;
@@ -782,6 +782,95 @@
             background-color: #f1f1f1;
             color: #000000;
         }
+
+:root {
+  --ink:#111;
+  --ink-muted:#666;
+  --line:#111;
+  --hairline:#f2f2f2;
+  --card:#fff;
+  --radius:16px;
+}
+
+/* 画像エリア（黒線を削除） */
+.treatment-image {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin: 0px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  /* border: 1.5px solid var(--line); ←削除 */
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
+.treatment-image img {
+  width: 100%;
+  display: none;
+  border-radius: 0;
+}
+
+/* 詳細・料金セクション */
+.treatment-description, 
+.treatment-price {
+  position: relative;
+  margin-top: 20px;
+  padding: 18px 0;   /* ← 左右の余白を削って横幅を広く */
+  background: #fff;
+  border-top: 2.5px solid var(--line);
+  border-bottom: 0;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  box-shadow: none;
+  line-height: 1.6;
+  color: #222;
+
+  width: 100%;       /* ← 親要素いっぱいに広げる */
+  max-width: none;   /* ← 幅制限がかかっていた場合に解除 */
+  box-sizing: border-box; /* ← パディング含めて横幅計算 */
+}
+
+/* 見出しラベル */
+.treatment-description::before,
+.treatment-price::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 14px;
+  padding: 2px 12px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+}
+.treatment-description::before { content: "詳細"; }
+.treatment-price::before { content: "料金"; }
+
+
+
+/* 強調 */
+.treatment-price strong {
+  font-size: 18px;  /* 料金だけ大きめ */
+  font-weight: 900;
+}
+.treatment-price span {
+  color: var(--ink-muted);
+}
+
+/* 重複文言を非表示 */
+.treatment-price > span:first-child {
+  display: none;
+}
+
+/* 画面が広い時 */
+@media (min-width: 720px){
+  .treatment-title { font-size: 18px; }
+  .treatment-price strong { font-size: 18px; }
+}
     </style>
 </head>
 
@@ -1194,26 +1283,114 @@
             // カレンダーを更新するために取得する日付を渡す
             fetchAvailability(currentDate);
 
+            function createTreatmentContent(title, imageUrl, description, price, time) {
+                // 所要時間の表示を条件付きで設定
+                const timeContent = time
+                    ? `<span>所要時間：</span><strong>${time}</strong><br>`
+                    : '';
+
+                return `
+    <div class="treatment-container">
+        <div class="treatment-title">${title}</div>
+
+        <div class="treatment-image">
+            <div class="spinner-overlay">
+                <div class="spinner"></div>
+            </div>
+            <img src="${imageUrl}" alt="${title}" 
+                onload="this.style.display='block'; this.previousElementSibling.style.display='none';">
+        </div>
+
+        <div class="treatment-description">${description}</div>
+
+        <div class="treatment-price">
+            <span>価格：</span><strong>${price}</strong>
+        </div>
+    </div>`;
+            }
+
+
+            // 呼び出し例（treatmentIdやボタンの条件が揃っている前提）
             if (treatmentId === 'treatment1') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：60分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：6,000円→4,800円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '背面 or 部分２ヶ所<br><br>疲れた所を重点的に流していきます✨',
+                    '料金：6,000円→4,800円',
+                    '約90分'
+                );
             } else if (treatmentId === 'treatment2') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：90分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：8,000円→6,400円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '軽めの全身ドレナージュ<br><br>特に疲れがひどい方、より重点的に流したい方におすすめです😌✨',
+                    '料金：8,000円→6,400円',
+                    '約120分'
+                );
             } else if (treatmentId === 'treatment3') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：120分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：10,000円→8,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '👑当店1番人気👑<br><br>全身の蓄積された老廃物を一気に流したい方におすすめ✨<br>大満足される方がほとんどです☺️',
+                    '料金：10,000円→8,000円',
+                    '約60分'
+                );
             } else if (treatmentId === 'treatment4') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：60分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：5,000円→4,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/u2tf8230wdj0lshxnxktb/.jpg?rlkey=546555uj92r9ipr8j7qijy57w&st=a7qitkq5&raw=1',
+                    '【エステでも整体でもない】老廃物が溜まりやすいリンパの流れを<br>優しく丁寧に整えるオリジナル手技✨',
+                    '料金：5,000円→4,000円',
+                    ''
+                );
             } else if (treatmentId === 'treatment5') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：45分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：5,000円→4,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/h7st59bjz3m7jd3lzx315/60.jpg?rlkey=d393stt5df34mdcj64ujiiz6q&st=b76hag34&raw=1',
+                    '脳・心・神経にリラックスを届ける特別なトリートメント<br>自律神経の乱れや、ストレス、<br>睡眠の悩みがある方におすすめです✨',
+                    '料金：5,000円→4,000円',
+                    ''
+                );
             } else if (treatmentId === 'treatment6') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：60分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：6,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '背面 or 部分２ヶ所<br><br>疲れた所を重点的に流していきます✨',
+                    '料金：6,000円',
+                    '約90分'
+                );
             } else if (treatmentId === 'treatment7') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：90分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：8,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '軽めの全身ドレナージュ<br><br>特に疲れがひどい方、より重点的に流したい方におすすめです😌✨',
+                    '料金：8,000円',
+                    '約120分'
+                );
             } else if (treatmentId === 'treatment8') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：120分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：10,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/iqzq2rekcnnoz72hax75r/60-90-120-1.jpg?rlkey=m8rm6naz9m5prrcl6tm1b2gq7&st=q3fwxx7t&raw=1',
+                    '👑当店1番人気👑<br><br>全身の蓄積された老廃物を一気に流したい方におすすめ✨<br>大満足される方がほとんどです☺️',
+                    '料金：10,000円',
+                    '約60分'
+                );
             } else if (treatmentId === 'treatment9') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：60分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：5,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/u2tf8230wdj0lshxnxktb/.jpg?rlkey=546555uj92r9ipr8j7qijy57w&st=a7qitkq5&raw=1',
+                    '【エステでも整体でもない】老廃物が溜まりやすいリンパの流れを<br>優しく丁寧に整えるオリジナル手技✨',
+                    '料金：5,000円',
+                    ''
+                );
             } else if (treatmentId === 'treatment10') {
-                treatmentText.innerHTML = `<div style="text-align: left;"><strong>所要時間：45分</strong><br>※症状によりお時間が前後する場合がございます</div><div style="text-align: right;"><strong>料金：5,000円</strong></div>`;
+                treatmentText.innerHTML = createTreatmentContent(
+                    '',
+                    'https://www.dropbox.com/scl/fi/h7st59bjz3m7jd3lzx315/60.jpg?rlkey=d393stt5df34mdcj64ujiiz6q&st=b76hag34&raw=1',
+                    '脳・心・神経にリラックスを届ける特別なトリートメント<br>自律神経の乱れや、ストレス、<br>睡眠の悩みがある方におすすめです✨',
+                    '料金：5,000円',
+                    ''
+                );
             } else {
                 treatmentText.innerHTML = '';
             }
